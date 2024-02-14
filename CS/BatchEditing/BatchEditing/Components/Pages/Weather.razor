@@ -1,0 +1,135 @@
+﻿@page "/weather"
+
+@using BatchEditing.Models
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.EntityFrameworkCore.ChangeTracking;
+
+@attribute [StreamRendering(true)]
+@rendermode InteractiveServer
+@inject IDbContextFactory<NorthwindContext> NorthwindContextFactory
+@implements IDisposable
+
+<div class="grid-container">
+    <DxGrid @ref="Grid"
+            Data="Data"
+            ValidationEnabled="false"
+            KeyFieldName="EmployeeId"
+            EditMode="GridEditMode.EditCell"
+            KeyboardNavigationEnabled="true"
+            EditModelSaving="Grid_EditModelSaving"
+            CustomizeElement="Grid_CustomizeElement"
+            CustomizeEditModel="Grid_CustomizeEditModel">
+        <Columns>
+            <DxGridDataColumn FieldName="FirstName" />
+            <DxGridDataColumn FieldName="LastName" />
+            <DxGridDataColumn FieldName="Title" />
+            <DxGridDataColumn FieldName="HireDate" />
+            <DxGridCommandColumn Width="30px" NewButtonVisible="false">
+                <CellDisplayTemplate>
+                    <div class="grid-cell-align-center">
+                        <DxButton IconCssClass="grid-icon grid-icon-delete"
+                                  RenderStyle="ButtonRenderStyle.Link"
+                                  Click="@(() => Delete_Click((Employee)context.DataItem))" />
+                    </div>
+                </CellDisplayTemplate>
+                <CellEditTemplate>
+                    <div class="grid-cell-align-center">
+                        <DxButton Enabled="false"
+                                  CssClass="grid-disabled-button"
+                                  IconCssClass="grid-icon grid-icon-delete"
+                                  RenderStyle="ButtonRenderStyle.Link" />
+                    </div>
+                </CellEditTemplate>
+            </DxGridCommandColumn>
+        </Columns>
+        <ToolbarTemplate>
+            <DxToolbar ItemRenderStyleMode="ToolbarRenderStyleMode.Plain">
+                <DxToolbarItem Text="New"
+                               Click="New_Click"
+                               IconCssClass="grid-toolbar-new" />
+                <DxToolbarItem Text="Save"
+                               BeginGroup="true"
+                               Click="Save_Click"
+                               Enabled="BatchItemsEnabled"
+                               IconCssClass="grid-toolbar-save" />
+                <DxToolbarItem Text="Cancel"
+                               Click="Cancel_Click"
+                               Enabled="BatchItemsEnabled"
+                               IconCssClass="grid-toolbar-cancel" />
+            </DxToolbar>
+        </ToolbarTemplate>
+    </DxGrid>
+</div>
+
+@code {
+    IGrid Grid { get; set; }
+    IList<Employee> Data { get; set; }
+    NorthwindContext DbContext { get; set; }
+
+    bool BatchItemsEnabled => DbContext.ChangeTracker.HasChanges() || Grid.IsEditing();
+
+    protected override async Task OnInitializedAsync() {
+        await ReloadData();
+    }
+
+    void IDisposable.Dispose() {
+        DbContext?.Dispose();
+    }
+
+    async Task New_Click() => await Grid.StartEditNewRowAsync();
+    async Task Save_Click() => await DbContext.SaveChangesAsync();
+    async Task Cancel_Click() => await ReloadData();
+
+    void Delete_Click(Employee dataItem) {
+        DbContext.Remove(dataItem);
+        Data.Remove(dataItem);
+        Grid.Reload();
+    }
+
+    void Grid_CustomizeElement(GridCustomizeElementEventArgs e) {
+        if (e.ElementType == GridElementType.DataCell) {
+            var employee = (Employee)Grid.GetDataItem(e.VisibleIndex);
+            var column = (IGridDataColumn)e.Column;
+            if (TryGetChangedEntityEntry(employee, out var entityEntry)) {
+                if (entityEntry.State == EntityState.Added || entityEntry.Property(column.FieldName).IsModified)
+                    e.CssClass = "grid-modified-cell";
+            }
+        }
+    }
+
+    void Grid_CustomizeEditModel(GridCustomizeEditModelEventArgs e) {
+        if (e.IsNew) {
+            var newEmployee = (Employee)e.EditModel;
+            newEmployee.FirstName = "John";
+            newEmployee.LastName = "Doe";
+            newEmployee.EmployeeId = DbContext.Employees.Max(x => x.EmployeeId) + 1;
+        }
+        else
+            e.EditModel = e.DataItem;
+    }
+
+    async Task Grid_EditModelSaving(GridEditModelSavingEventArgs e) {
+        if (e.IsNew) {
+            var editModel = (Employee)e.EditModel;
+            await DbContext.AddAsync(editModel);
+            Data.Add(editModel);
+        }
+    }
+
+    bool TryGetChangedEntityEntry<T>(T entity, out EntityEntry<T> entry) where T : class {
+        entry = null;
+        if (!DbContext.ChangeTracker.HasChanges())
+            return false;
+        entry = DbContext.ChangeTracker.Entries<T>().FirstOrDefault(x => x.Entity == entity);
+        if (entry == null || entry.State == EntityState.Unchanged)
+            return false;
+        return true;
+    }
+
+    async Task ReloadData() {
+        DbContext?.Dispose();
+        DbContext = await NorthwindContextFactory.CreateDbContextAsync();
+        Data = await DbContext.Employees.ToListAsync();
+        Grid?.Reload();
+    }
+}
