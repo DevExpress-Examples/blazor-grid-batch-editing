@@ -8,7 +8,7 @@ This example demonstrates how to implement batch data editing in the [DevExpress
 
 ![Batch Editing in DevExpress Blazor Grid](/images/batch-editing.gif)
 
-The example uses [DbContext](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbcontext?view=efcore-8.0) to obtain and update Grid data. When a user creates a new row or modify/delete an existing row, a [DbContext](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbcontext?view=efcore-8.0) instance tracks changes. The user can press **Save** to save all changes made in this context or press **Cancel** to dispose this context and discard accumulated changes.
+The example uses [DbContext](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbcontext?view=efcore-8.0) to obtain and update Grid data. When a user creates a new row or modifies/deletes an existing row, a [DbContext](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbcontext?view=efcore-8.0) instance tracks changes. The user can press **Save** to save all changes made in this context or press **Cancel** to dispose this context and discard accumulated changes.
 
 The [CustomizeElement](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid.CustomizeElement) event's handler uses the [DbContext.ChangeTracker](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbcontext.changetracker?view=efcore-8.0#microsoft-entityframeworkcore-dbcontext-changetracker) property to identify and highlight modified cells.
 
