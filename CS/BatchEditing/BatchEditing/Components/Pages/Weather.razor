@@ -121,9 +121,7 @@
         if (!DbContext.ChangeTracker.HasChanges())
             return false;
         entry = DbContext.ChangeTracker.Entries<T>().FirstOrDefault(x => x.Entity == entity);
-        if (entry == null || entry.State == EntityState.Unchanged)
-            return false;
-        return true;
+        return entry != null && entry.State != EntityState.Unchanged && entry.State != EntityState.Detached;
     }
 
     async Task ReloadData() {
