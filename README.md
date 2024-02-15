@@ -14,8 +14,8 @@ The [CustomizeElement](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGr
 
 ## Files to Review
 
-* [Weather.razor](./CS/BatchEditing/BatchEditing/Components/Pages/Weather.razor)
-* [Weather.razor.css](./CS/BatchEditing/BatchEditing/Components/Pages/Weather.razor.css)
+* [Index.razor](./CS/BatchEditing/BatchEditing/Components/Pages/Index.razor)
+* [Index.razor.css](./CS/BatchEditing/BatchEditing/Components/Pages/Index.razor.css)
 
 ## Documentation
 
