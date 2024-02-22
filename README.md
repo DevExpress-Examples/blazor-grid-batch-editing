@@ -3,13 +3,13 @@
 [![](https://img.shields.io/badge/Open_in_DevExpress_Support_Center-FF7200?style=flat-square&logo=DevExpress&logoColor=white)](https://supportcenter.devexpress.com/ticket/details/T1217239)
 [![](https://img.shields.io/badge/📖_How_to_use_DevExpress_Examples-e9f6fc?style=flat-square)](https://docs.devexpress.com/GeneralInformation/403183)
 <!-- default badges end -->
-# Grid for Blazor – How to enable batch data editing with Entity Framework Core
+# DevExpress Blazor Grid – How to enable batch data editing with Entity Framework Core
 
-This example demonstrates how to use [Entity Framework Core](https://learn.microsoft.com/en-us/ef/core/) to implement batch data editing in the [DevExpress Blazor Grid](https://docs.devexpress.com/Blazor/403143/grid) component.
+This example demonstrates how you can use [Entity Framework Core](https://learn.microsoft.com/en-us/ef/core/) to implement batch data editing with the [DevExpress Blazor Grid](https://docs.devexpress.com/Blazor/403143/grid) component.
 
 ![Batch Editing in DevExpress Blazor Grid](/images/batch-editing.gif)
 
-The example uses [DbContext](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbcontext?view=efcore-8.0) to obtain and update Grid data. When a user creates a new row or modifies/deletes an existing row, a [DbContext](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbcontext?view=efcore-8.0) instance tracks changes. The user can press **Save** to save all changes made in this context or press **Cancel** to dispose this context and discard accumulated changes.
+The example uses [DbContext](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbcontext?view=efcore-8.0) to obtain and update Blazor Grid data. When a user creates a new row or modifies/deletes an existing row, a [DbContext](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbcontext?view=efcore-8.0) instance tracks changes. The user can press **Save** to save all changes made in this context or press **Cancel** to dispose this context and discard accumulated changes.
 
 The [CustomizeElement](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid.CustomizeElement) event's handler uses the [DbContext.ChangeTracker](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbcontext.changetracker?view=efcore-8.0#microsoft-entityframeworkcore-dbcontext-changetracker) property to identify and highlight modified cells.
 
