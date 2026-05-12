@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "BatchEditing": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:2313;http://localhost:2314"
+    }
+  }
+}
